@@ -1,46 +1,67 @@
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-  <meta charset="UTF-8">
-  <title>GitHub Stream Player</title>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <style>
-    body {
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: #000;
-    }
-    video {
-      width: 80%;
-      max-width: 900px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.8);
-    }
-  </style>
-</head>
-<body>
-  <video id="video" controls autoplay muted></video>
-  <script>
-    var video = document.getElementById('video');
+<div style="position: relative; display: inline-block; width: 100%; max-width: 800px;">
+  <!-- Video -->
+  <video id="video" controls autoplay style="width: 100%; height: auto; background: black;"></video>
 
-    // Proxy orqali oqim
-    var proxy = "https://cors-anywhere.herokuapp.com/";
-    var stream = "http://vod.splay.uz/live_splay/original/Setanta1HD/tracks-v1a1/mono.m3u8";
-    var url = proxy + stream;
+  <!-- Logotip -->
+  <img src="https://raw.githubusercontent.com/umidjonqaxxorov624-lgtm/telegram-stream/main/logo.png"
+       style="position: absolute; top: 10px; right: 10px; width: 100px; opacity: 0.9; pointer-events: none;" />
 
-    if (Hls.isSupported()) {
-      var hls = new Hls();
-      hls.loadSource(url);
-      hls.attachMedia(video);
-      video.play();
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = url;
-      video.play();
+  <!-- Sifat tanlash -->
+  <select id="qualitySelect" 
+          style="position:absolute; bottom:10px; right:10px; z-index:10; padding:5px;">
+    <option value="auto">Auto</option>
+  </select>
+
+  <!-- To‘liq ekran tugmasi -->
+  <button onclick="toggleFullScreen()" 
+          style="position:absolute; bottom:10px; left:10px; z-index:10; padding:5px;">
+    Fullscreen
+  </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+  var video = document.getElementById('video');
+  var qualitySelect = document.getElementById('qualitySelect');
+  var streamUrl = "https://soft-sea-814f.umidjonqaxxorov624.workers.dev/";
+
+  if (Hls.isSupported()) {
+    var hls = new Hls();
+    hls.loadSource(streamUrl);
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+      console.log("Mavjud sifatlar:", data.levels);
+      data.levels.forEach((level, index) => {
+        if (level.height >= 240) { // faqat 240p dan yuqori
+          var option = document.createElement("option");
+          option.value = index;
+          option.text = level.height + "p";
+          qualitySelect.appendChild(option);
+        }
+      });
+    });
+
+    qualitySelect.addEventListener("change", function () {
+      if (this.value === "auto") {
+        hls.currentLevel = -1;
+      } else {
+        hls.currentLevel = parseInt(this.value);
+      }
+    });
+  } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+    video.src = streamUrl;
+    video.play();
+  }
+
+  // Fullscreen funksiyasi
+  function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      video.requestFullscreen().catch(err => {
+        alert("Fullscreen ishlamadi: " + err.message);
+      });
+    } else {
+      document.exitFullscreen();
     }
-  </script>
-</body>
-</html>
-
+  }
+</script>
