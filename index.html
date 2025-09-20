@@ -2,23 +2,43 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <title>Stream Test</title>
+  <title>GitHub Stream Player</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
-    body {margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background:#000;}
-    video {width:80%;max-width:900px;border-radius:12px;box-shadow:0 0 20px rgba(0,0,0,0.8);}
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #000;
+    }
+    video {
+      width: 80%;
+      max-width: 900px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    }
   </style>
 </head>
 <body>
   <video id="video" controls autoplay muted></video>
   <script>
     var video = document.getElementById('video');
+
+    // Proxy orqali oqim
+    var proxy = "https://cors-anywhere.herokuapp.com/";
+    var stream = "http://vod.splay.uz/live_splay/original/Setanta1HD/tracks-v1a1/mono.m3u8";
+    var url = proxy + stream;
+
     if (Hls.isSupported()) {
       var hls = new Hls();
-      hls.loadSource("http://vod.splay.uz/live_splay/original/Setanta1HD/tracks-v1a1/mono.m3u8");
+      hls.loadSource(url);
       hls.attachMedia(video);
+      video.play();
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = "http://vod.splay.uz/live_splay/original/Setanta1HD/tracks-v1a1/mono.m3u8";
+      video.src = url;
+      video.play();
     }
   </script>
 </body>
