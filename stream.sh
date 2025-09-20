@@ -6,7 +6,7 @@
 SOURCE="http://vod.splay.uz/live_splay/original/Setanta1HD/tracks-v1a1/mono.m3u8"
 
 # Telegram RTMPS serveri
-TELEGRAM_URL="rtmps://dc4-1.rtmp.t.me/s/"
+TELEGRAM_URL="rtmps://dc4-1.rtmp.t.me/s/2466207508:e5mnH_DBb-2v4ODNdQpLAw"
 
 # Bu yerga o'z Stream Key'ingizni qo'ying
 STREAM_KEY="2466207508:e5mnH_DBb-2v4ODNdQpLAw"
