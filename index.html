@@ -1,0 +1,64 @@
+<div id="playerWrapper" style="position: relative; width: 100%; max-width: 800px; margin: auto; background: black; overflow: hidden; font-family: sans-serif;">
+  <video id="video" autoplay style="width: 100%; height: auto; display: block;"></video>
+  
+  <!-- Logotip -->
+  <img id="logo" src="https://raw.githubusercontent.com/umidjonqaxxorov624-lgtm/telegram-stream/main/logo.png"
+       style="position: absolute; top: 12px; right: 12px; width: 190px; opacity: 0.9; pointer-events: none;" />
+
+  <!-- Custom controls -->
+  <div id="controls" style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; padding: 5px; box-sizing: border-box;">
+    <button id="playBtn" style="margin-right:10px;">▶️</button>
+    <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="1" style="margin-right:auto;">
+    <button id="fsBtn" style="margin-left:10px;">⛶</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+  const video = document.getElementById('video');
+  const wrapper = document.getElementById('playerWrapper');
+  const playBtn = document.getElementById('playBtn');
+  const fsBtn = document.getElementById('fsBtn');
+  const volumeSlider = document.getElementById('volumeSlider');
+  const streamUrl = "https://soft-sea-814f.umidjonqaxxorov624.workers.dev/";
+
+  // HLS load
+  if(Hls.isSupported()){
+    const hls = new Hls();
+    hls.loadSource(streamUrl);
+    hls.attachMedia(video);
+  } else if(video.canPlayType("application/vnd.apple.mpegurl")) {
+    video.src = streamUrl;
+    video.play();
+  }
+
+  // Play/Pause
+  playBtn.addEventListener('click', () => {
+    if(video.paused){ 
+      video.play(); 
+      playBtn.textContent = '⏸️'; 
+    } else { 
+      video.pause(); 
+      playBtn.textContent = '▶️'; 
+    }
+  });
+
+  // Volume control
+  volumeSlider.addEventListener('input', () => {
+    video.volume = volumeSlider.value;
+  });
+
+  // Custom Fullscreen
+  fsBtn.addEventListener('click', () => {
+    if(!document.fullscreenElement){
+      wrapper.requestFullscreen().catch(err => alert("Fullscreen xato: " + err.message));
+    } else {
+      document.exitFullscreen();
+    }
+  });
+
+  // Video ended
+  video.addEventListener('ended', () => {
+    playBtn.textContent = '▶️';
+  });
+</script>
